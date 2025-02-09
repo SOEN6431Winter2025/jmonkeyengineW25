@@ -42,12 +42,12 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
     // flag to allow for the joystick axis to be calibrated on startup
     private boolean initialCalibrationComplete = false;
     // mappings used for onAnalog
-    private final String ORIENTATION_X_PLUS = "Orientation_X_Plus";
-    private final String ORIENTATION_X_MINUS = "Orientation_X_Minus";
-    private final String ORIENTATION_Y_PLUS = "Orientation_Y_Plus";
-    private final String ORIENTATION_Y_MINUS = "Orientation_Y_Minus";
-    private final String ORIENTATION_Z_PLUS = "Orientation_Z_Plus";
-    private final String ORIENTATION_Z_MINUS = "Orientation_Z_Minus";
+    private static final String ORIENTATION_X_PLUS = "Orientation_X_Plus";
+    private static final String ORIENTATION_X_MINUS = "Orientation_X_Minus";
+    private static final String ORIENTATION_Y_PLUS = "Orientation_Y_Plus";
+    private static final String ORIENTATION_Y_MINUS = "Orientation_Y_Minus";
+    private static final String ORIENTATION_Z_PLUS = "Orientation_Z_Plus";
+    private static final String ORIENTATION_Z_MINUS = "Orientation_Z_Minus";
 
 
     // variables to save the current rotation
@@ -79,21 +79,13 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
 
     // Make sure to set joystickEventsEnabled = true in MainActivity for Android
 
-    private float toDegrees(float rad) {
-        return rad * FastMath.RAD_TO_DEG;
-    }
-
     @Override
     public void simpleInitApp() {
 
         // useAbsolute = true;
         // enableRumble = true;
 
-        if (enableFlyByCameraRotation) {
-            flyCam.setEnabled(true);
-        } else {
-            flyCam.setEnabled(false);
-        }
+        iflyCam.setEnabled(enableFlyByCameraRotation);
 
         Mesh lineX = new Line(Vector3f.ZERO, Vector3f.ZERO.add(Vector3f.UNIT_X.mult(3)));
         Mesh lineY = new Line(Vector3f.ZERO, Vector3f.ZERO.add(Vector3f.UNIT_Y.mult(3)));
@@ -172,7 +164,7 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
                     axis.assignAxis(ORIENTATION_X_PLUS, ORIENTATION_X_MINUS);
                     inputManager.addListener(this, ORIENTATION_X_PLUS, ORIENTATION_X_MINUS);
                     logger.log(Level.INFO, "Found {0} Joystick, assigning mapping for X axis: {1}, with max value: {2}",
-                            new Object[]{joystick.toString(), axis.toString(), ((SensorJoystickAxis) axis).getMaxRawValue()});
+                            new Object[]{joystick, axis, ((SensorJoystickAxis) axis).getMaxRawValue()});
                 }
 
                 axis = joystick.getAxis(SensorJoystickAxis.ORIENTATION_Y);
@@ -180,7 +172,7 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
                     axis.assignAxis(ORIENTATION_Y_PLUS, ORIENTATION_Y_MINUS);
                     inputManager.addListener(this, ORIENTATION_Y_PLUS, ORIENTATION_Y_MINUS);
                     logger.log(Level.INFO, "Found {0} Joystick, assigning mapping for Y axis: {1}, with max value: {2}",
-                            new Object[]{joystick.toString(), axis.toString(), ((SensorJoystickAxis) axis).getMaxRawValue()});
+                            new Object[]{joystick, axis, ((SensorJoystickAxis) axis).getMaxRawValue()});
                 }
 
                 axis = joystick.getAxis(SensorJoystickAxis.ORIENTATION_Z);
@@ -188,7 +180,7 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
                     axis.assignAxis(ORIENTATION_Z_PLUS, ORIENTATION_Z_MINUS);
                     inputManager.addListener(this, ORIENTATION_Z_PLUS, ORIENTATION_Z_MINUS);
                     logger.log(Level.INFO, "Found {0} Joystick, assigning mapping for Z axis: {1}, with max value: {2}",
-                            new Object[]{joystick.toString(), axis.toString(), ((SensorJoystickAxis) axis).getMaxRawValue()});
+                            new Object[]{joystick, axis, ((SensorJoystickAxis) axis).getMaxRawValue()});
                 }
 
                 joystickMap.put(joystick.getJoyId(), joystick);
@@ -206,7 +198,7 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
             for (IntMap.Entry<Joystick> entry : joystickMap) {
                 for (JoystickAxis axis : entry.getValue().getAxes()) {
                     if (axis instanceof SensorJoystickAxis) {
-                        logger.log(Level.INFO, "Calibrating Axis: {0}", axis.toString());
+                        logger.log(Level.INFO, "Calibrating Axis: {0}", axis);
                         ((SensorJoystickAxis) axis).calibrateCenter();
                     }
                 }
@@ -236,7 +228,7 @@ public class TestAndroidSensors extends SimpleApplication implements ActionListe
             for (IntMap.Entry<Joystick> entry : joystickMap) {
                 for (JoystickAxis axis : entry.getValue().getAxes()) {
                     if (axis instanceof SensorJoystickAxis) {
-                        logger.log(Level.INFO, "Calibrating Axis: {0}", axis.toString());
+                        logger.log(Level.INFO, "Calibrating Axis: {0}", axis);
                         ((SensorJoystickAxis) axis).calibrateCenter();
                     }
                 }
