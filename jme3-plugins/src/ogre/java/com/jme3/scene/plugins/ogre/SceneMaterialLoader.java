@@ -125,10 +125,16 @@ class SceneMaterialLoader extends DefaultHandler {
             this.folderName = folderName;
             
             reset();
-            
+
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setNamespaceAware(true);  
-            XMLReader xr = factory.newSAXParser().getXMLReader();  
+            factory.setNamespaceAware(true);
+
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+            XMLReader xr = factory.newSAXParser().getXMLReader();
 
             xr.setContentHandler(this);
             xr.setErrorHandler(this);
