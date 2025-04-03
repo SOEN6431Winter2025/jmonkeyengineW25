@@ -79,16 +79,7 @@ public class XMLExporter implements JmeExporter {
     public void save(Savable object, OutputStream outputStream) throws IOException {
         Document document = null;
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            // XXE Protection for Document Builder
-            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            dbf.setXIncludeAware(false);
-            dbf.setExpandEntityReferences(false);
-
-            document = dbf.newDocumentBuilder().newDocument();
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException ex) {
             throw new IOException(ex);
         }
@@ -104,10 +95,6 @@ public class XMLExporter implements JmeExporter {
 
         try {
             TransformerFactory tfFactory = TransformerFactory.newInstance();
-            // XXE Protection for Transformer
-            tfFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            tfFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            tfFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             tfFactory.setAttribute("indent-number", indentSpaces);
 
             Transformer transformer = tfFactory.newTransformer();
