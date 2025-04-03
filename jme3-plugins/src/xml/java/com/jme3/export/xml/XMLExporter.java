@@ -79,13 +79,7 @@ public class XMLExporter implements JmeExporter {
     public void save(Savable object, OutputStream outputStream) throws IOException {
         Document document = null;
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            // XXE Protection for Document Builder
-            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            dbf.setXIncludeAware(false);
-            dbf.setExpandEntityReferences(false);
-
-            document = dbf.newDocumentBuilder().newDocument();
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException ex) {
             throw new IOException(ex);
         }
