@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.w3c.dom.Document;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -77,9 +78,20 @@ public class XMLExporter implements JmeExporter {
 
     @Override
     public void save(Savable object, OutputStream outputStream) throws IOException {
-        Document document = null;
+        Document document;
         try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            // Disable DTDs entirely
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // Disable external entities
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            // Enable secure processing
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+            document = dbf.newDocumentBuilder().newDocument();
+            document.setXmlStandalone(true);
         } catch (ParserConfigurationException ex) {
             throw new IOException(ex);
         }
