@@ -526,6 +526,13 @@ public class SceneLoader extends DefaultHandler implements AssetLoader {
             // checking with JmeSystem.
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            } catch (ParserConfigurationException | SAXException ex) {
+                throw new RuntimeException("Failed to set secure parser features", ex);
+            }
             XMLReader xr = factory.newSAXParser().getXMLReader();
 
             xr.setContentHandler(this);
