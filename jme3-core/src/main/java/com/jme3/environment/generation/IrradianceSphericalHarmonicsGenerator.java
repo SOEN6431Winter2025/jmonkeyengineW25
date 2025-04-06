@@ -37,6 +37,8 @@ import com.jme3.light.LightProbe;
 import com.jme3.math.Vector3f;
 import com.jme3.texture.TextureCubeMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -52,6 +54,8 @@ public class IrradianceSphericalHarmonicsGenerator extends RunnableWithProgress 
     private TextureCubeMap sourceMap;
     private LightProbe store;
     private final Application app;
+    private static final Logger LOGGER = Logger.getLogger(IrradianceSphericalHarmonicsGenerator.class.getName());
+
 
     /**
      * Creates an Irradiance map generator. The app is needed to enqueue the
@@ -96,7 +100,7 @@ public class IrradianceSphericalHarmonicsGenerator extends RunnableWithProgress 
             store.setShCoeffs(shCoefficients);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error while generating spherical harmonics", e);
         }
         app.enqueue(new Callable<Void>() {
 
