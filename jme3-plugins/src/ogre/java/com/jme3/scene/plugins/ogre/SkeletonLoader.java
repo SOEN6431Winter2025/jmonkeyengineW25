@@ -263,7 +263,11 @@ public class SkeletonLoader extends DefaultHandler implements AssetLoader {
             // checking with JmeSystem.
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
-            XMLReader xr = factory.newSAXParser().getXMLReader();  
+            XMLReader xr = factory.newSAXParser().getXMLReader();
+
+            xr.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            xr.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            xr.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                          
             xr.setContentHandler(this);
             xr.setErrorHandler(this);
