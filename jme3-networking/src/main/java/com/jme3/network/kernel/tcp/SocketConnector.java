@@ -42,6 +42,9 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 
 /**
  *  A straight forward socket-based connector implementation that
@@ -62,7 +65,11 @@ public class SocketConnector implements Connector
 
     public SocketConnector( InetAddress address, int port ) throws IOException
     {
-        this.sock = new Socket(address, port);
+        SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        this.sock = factory.createSocket(address, port);
+        if (sock instanceof SSLSocket) {
+            ((SSLSocket) sock).startHandshake(); // Start TLS handshake
+        }
         remoteAddress = sock.getRemoteSocketAddress(); // for info purposes 
         
         // Disable Nagle's buffering so data goes out when we
