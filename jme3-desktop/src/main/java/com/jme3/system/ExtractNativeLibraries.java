@@ -65,8 +65,24 @@ public class ExtractNativeLibraries {
             System.err.println("You can also use ExtractNativeLibraries getjarexcludes to get a list of excludes for the jar files that contain binaries.");
             System.exit(1);
         }
-        String path = args[1].replace('/', File.separatorChar);
-        File folder = new File(path);
+        String inputPath = args[1];
+        File folder;
+        File baseDir;
+
+        try {
+            folder = new File(inputPath).getAbsoluteFile().toPath().normalize().toFile();
+            baseDir = new File(".").getCanonicalFile();
+
+            if (!folder.getCanonicalPath().startsWith(baseDir.getCanonicalPath())) {
+                System.err.println("Invalid path: potential path traversal attempt detected.");
+                System.exit(2);
+            }
+        } catch (IOException e) {
+            System.err.println("Error resolving paths: " + e.getMessage());
+            System.exit(2);
+            return; // added for clarity, although System.exit already exits
+        }
+
         try {
             if ("Windows32".equals(args[0])) {
                 NativeLibraryLoader.extractNativeLibraries(Platform.Windows32, folder);
